@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: ./..
+      dockerfile: ./docker/Dockerfile
+    image: drf_jwt:development
+    container_name: drf_jwt_api
+    restart: on-failure
+    command: sh scripts/start_api.sh
+    environment:
+      - DJANGO_ENV=development
+      - DJANGO_PORT=8000
+    ports:
+      - ${DJANGO_PORT:-8000}:${DJANGO_PORT:-8000}
+    volumes:
+      - ../scripts:/code/scripts
+      - ../src:/code/src
+      - ../tests:/code/tests
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    image: postgres:12.7
+    container_name: drf_jwt_db
+    restart: on-failure
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-drf_jwt}
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_PORT=${POSTGRES_PORT:-5432}
+    ports:
+      - ${POSTGRES_PORT:-5432}:${POSTGRES_PORT:-5432}
+    volumes:
+      - pgdata_development:/var/lib/postgresql/data
+    healthcheck:
+      test: pg_isready -q -d drf_jwt -U postgres
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+volumes:
+  pgdata_development:
+    driver: local
+    name: pgdata_development
