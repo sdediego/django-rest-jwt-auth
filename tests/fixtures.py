@@ -24,7 +24,7 @@ def user() -> UserEntity:
         surname=generate_random_string(10),
         username=generate_random_string(10),
         email='test@test.com',
-        password='password',
+        password='Password_1234',
         is_active=random.choice([True, False]),
         last_login=get_current_datetime(),
         date_joined=get_current_datetime()
