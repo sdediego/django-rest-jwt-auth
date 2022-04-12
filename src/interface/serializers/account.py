@@ -3,9 +3,16 @@
 import hashlib
 import re
 
-from marshmallow import Schema, fields, validate, validates, validates_schema
+from marshmallow import Schema, fields, validate, validates, validates_schema, EXCLUDE
 from marshmallow.decorators import post_load
 from marshmallow.exceptions import ValidationError
+
+
+class NewUserSerializer(Schema):
+    email = fields.Email(required=True)
+
+    class Meta:
+        unknown = EXCLUDE
 
 
 class UserRegisterSerializer(Schema):
