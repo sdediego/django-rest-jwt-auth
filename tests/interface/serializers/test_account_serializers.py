@@ -3,8 +3,16 @@
 import pytest
 from marshmallow.exceptions import ValidationError
 
-from src.interface.serializers.account import UserRegisterSerializer
+from src.interface.serializers.account import NewUserSerializer, UserRegisterSerializer
 from tests.fixtures import user
+
+
+@pytest.mark.unit
+def test_new_user_serializer(user):
+    serializer = NewUserSerializer()
+    valid_data = serializer.dump(user)
+    assert len(valid_data) == 1
+    assert valid_data['email'] == user.email
 
 
 def _test_user_register_serializer_validate_password(password, error_message):
