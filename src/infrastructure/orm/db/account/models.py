@@ -25,7 +25,7 @@ class User(models.Model):
         ordering = ('email',)
 
     def __str__(self) -> str:
-        return UserEntity.to_string(self)
+        return str(self.map())
 
     def map(self, fields: List[str] = None) -> UserEntity:
         fields = fields or [str(field) for field in UserEntity.__dataclass_fields__]
