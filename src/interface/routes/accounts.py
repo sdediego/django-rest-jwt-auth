@@ -5,13 +5,13 @@ from src.domain.core.routing import Route, Router
 from src.interface.controllers.account import UserController
 
 
-account_router = Router()
-account_router.register({
+user_router = Router()
+user_router.register({
     Route(
         http_verb=HTTP_VERB_POST,
-        path=r'^accounts/register/$',
+        path=r'^accounts/users/register/$',
         controller=UserController,
         method='post',
-        name='account_register'
+        name='user_register'
     )
 })
