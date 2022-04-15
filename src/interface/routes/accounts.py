@@ -6,12 +6,12 @@ from src.interface.controllers.account import UserController
 
 
 user_router = Router()
-user_router.register({
+user_router.register([
     Route(
         http_verb=HTTP_VERB_POST,
         path=r'^accounts/users/register/$',
         controller=UserController,
-        method='post',
+        method='register',
         name='user_register'
     )
-})
+])

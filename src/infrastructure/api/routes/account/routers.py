@@ -12,7 +12,7 @@ class UserRouter(SimpleRouter):
             url=user_router.get_url('user_register'),
             mapping=user_router.map('user_register'),
             initkwargs={'viewset_factory': UserViewSetFactory},
-            name='{basename}-post',
+            name='{basename}-register',
             detail=False,
         )
     ]
