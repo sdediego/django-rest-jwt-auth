@@ -50,6 +50,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'src.infrastructure.server.urls'
 
+API_ROUTES = 'src.infrastructure.api.routes'
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
