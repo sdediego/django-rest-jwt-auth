@@ -14,5 +14,12 @@ class UserRouter(SimpleRouter):
             initkwargs={'viewset_factory': UserViewSetFactory},
             name='{basename}-register',
             detail=False,
+        ),
+        Route(
+            url=user_router.get_url('user_login'),
+            mapping=user_router.map('user_login'),
+            initkwargs={'viewset_factory': UserViewSetFactory},
+            name='{basename}-login',
+            detail=False,
         )
     ]

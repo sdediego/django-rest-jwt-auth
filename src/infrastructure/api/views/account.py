@@ -14,6 +14,11 @@ class UserViewSet(ViewSet):
     def controller(self) -> UserController:
         return self.viewset_factory.create()
 
+    def login(self, request: Request, *args, **kwargs) -> Response:
+        data = request.data
+        payload, status = self.controller.login(data)
+        return Response(data=payload, status=status)
+
     def register(self, request: Request, *args, **kwargs) -> Response:
         data = request.data
         payload, status = self.controller.register(data)
