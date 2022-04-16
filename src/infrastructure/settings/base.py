@@ -92,6 +92,15 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+# JSON Web Token Auth
+
+JWT_KEY = '3Atza-vJoK+*qP#h'
+
+JWT_ALGORITHM = 'HS256'
+
+JWT_EXP_DELTA_SECONDS = 60 * 60
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
