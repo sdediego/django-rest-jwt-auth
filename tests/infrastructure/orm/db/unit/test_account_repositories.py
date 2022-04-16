@@ -8,7 +8,7 @@ from django.db.utils import IntegrityError
 import pytest
 
 from src.domain.account import UserEntity
-from src.domain.exceptions import DuplicateEntity
+from src.domain.exceptions import EntityDuplicate
 from src.infrastructure.orm.db.account.models import User
 from src.infrastructure.orm.db.account.repositories import UserDatabaseRepository
 from tests.fixtures import user
@@ -30,6 +30,6 @@ def test_user_db_repository_create(mock_objects, user):
 def test_user_db_repository_create_duplicate(mock_objects, user):
     mock_create = mock_objects.create
     mock_create.side_effect = IntegrityError
-    with pytest.raises(DuplicateEntity) as err:
+    with pytest.raises(EntityDuplicate) as err:
         UserDatabaseRepository().create(user.email, user.password)
     assert 'Already exists a user with this data' in str(err.value)

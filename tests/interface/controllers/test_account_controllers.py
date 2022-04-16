@@ -1,14 +1,12 @@
 # coding: utf-8
 
-import datetime
-import random
 from http import HTTPStatus
 from unittest.mock import Mock
 
 import pytest
 
 from src.interface.controllers.account import UserController
-from src.domain.exceptions import DuplicateEntity
+from src.domain.exceptions import EntityDuplicate
 from tests.fixtures import user
 
 
@@ -52,7 +50,7 @@ def test_user_controller_register_duplicate(user):
     }
     error_message = 'Already exists a user with this data'
     user_interator = Mock()
-    user_interator.register.side_effect = DuplicateEntity(error_message)
+    user_interator.register.side_effect = EntityDuplicate(error_message)
     controller = UserController(user_interator)
     data, status = controller.register(params)
     assert user_interator.register.called

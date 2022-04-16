@@ -14,5 +14,5 @@ class EntityDoesNotExist(EntityError):
     pass
 
 
-class DuplicateEntity(EntityError):
+class EntityDuplicate(EntityError):
     pass

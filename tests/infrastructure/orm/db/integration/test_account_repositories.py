@@ -3,7 +3,7 @@
 import pytest
 
 from src.domain.account import UserEntity
-from src.domain.exceptions import DuplicateEntity
+from src.domain.exceptions import EntityDuplicate
 from src.infrastructure.orm.db.account.repositories import UserDatabaseRepository
 from tests.fixtures import user
 from tests.infrastructure.orm.db.factories import UserFactory
@@ -20,6 +20,6 @@ def test_user_db_repository_create(user):
 @pytest.mark.django_db
 def test_user_db_repository_create_duplicate(user):
     UserFactory.create(email=user.email, password=user.password)
-    with pytest.raises(DuplicateEntity) as err:
+    with pytest.raises(EntityDuplicate) as err:
         UserDatabaseRepository().create(user.email, user.password)
     assert 'Already exists a user with this data' in str(err.value)
