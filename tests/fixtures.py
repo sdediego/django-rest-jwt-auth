@@ -36,5 +36,5 @@ def user() -> UserEntity:
 def user_token(user) -> UserTokenEntity:
     return UserTokenEntity(
         user=user,
-        token=generate_random_string(64)
+        token=generate_random_string(144)
     )
