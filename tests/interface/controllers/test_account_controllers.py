@@ -6,8 +6,55 @@ from unittest.mock import Mock
 import pytest
 
 from src.interface.controllers.account import UserController
-from src.domain.exceptions import EntityDuplicate
+from src.domain.exceptions import EntityDoesNotExist, EntityDuplicate
 from tests.fixtures import user
+
+
+@pytest.mark.unit
+def test_user_controller_login(user):
+    params = {
+        'email': user.email,
+        'password': user.password
+    }
+    user_interator = Mock()
+    user_interator.login.return_value = user
+    controller = UserController(user_interator)
+    data, status = controller.login(params)
+    assert user_interator.login.called
+    assert status == HTTPStatus.OK.value
+    assert 'user' in data
+    assert 'token' in data
+
+
+@pytest.mark.unit
+def test_user_controller_login_bad_request(user):
+    params = {
+        'email': user.email
+    }
+    user_interator = Mock()
+    user_interator.login.return_value = user
+    controller = UserController(user_interator)
+    data, status = controller.login(params)
+    assert not user_interator.login.called
+    assert status == HTTPStatus.BAD_REQUEST.value
+    assert 'errors' in data
+
+
+@pytest.mark.unit
+def test_user_controller_login_does_not_exist(user):
+    params = {
+        'email': user.email,
+        'password': user.password
+    }
+    error_message = 'User does not exist with this data'
+    user_interator = Mock()
+    user_interator.login.side_effect = EntityDoesNotExist(error_message)
+    controller = UserController(user_interator)
+    data, status = controller.login(params)
+    assert user_interator.login.called
+    assert status == HTTPStatus.BAD_REQUEST.value
+    assert 'error' in data
+    assert error_message in data['error']
 
 
 @pytest.mark.unit
