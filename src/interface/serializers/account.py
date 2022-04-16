@@ -1,11 +1,12 @@
 # coding: utf-8
 
-import hashlib
 import re
 
 from marshmallow import Schema, fields, validate, validates, validates_schema, EXCLUDE
 from marshmallow.decorators import post_load
 from marshmallow.exceptions import ValidationError
+
+from src.interface.serializers.utils import generate_password_hash
 
 
 class NewUserSerializer(Schema):
@@ -13,6 +14,23 @@ class NewUserSerializer(Schema):
 
     class Meta:
         unknown = EXCLUDE
+
+
+class UserLoginSerializer(Schema):
+    email = fields.Email(required=True)
+    password = fields.String(required=True)
+
+    def load(self, data: dict) -> dict:
+        try:
+            data = super().load(data)
+        except ValidationError as err:
+            data = {'errors': err.messages}
+        return data
+
+    @post_load
+    def make_password_hash(self, data: dict, **kwargs) -> dict:
+        data['password'] = generate_password_hash(data['password'])
+        return data
 
 
 class UserRegisterSerializer(Schema):
@@ -53,12 +71,24 @@ class UserRegisterSerializer(Schema):
             data = {'errors': err.messages}
         return data
 
-    @staticmethod
-    def generate_password_hash(password: str) -> str:
-        return hashlib.sha256(password.encode()).hexdigest()
-
     @post_load
     def make_password_hash(self, data: dict, **kwargs) -> dict:
         data.pop('password2')
-        data['password'] = self.generate_password_hash(data['password'])
+        data['password'] = generate_password_hash(data['password'])
         return data
+
+
+class UserSerializer(Schema):
+    id = fields.Integer()
+    name = fields.String()
+    surname = fields.String()
+    username = fields.String()
+    email = fields.Email(required=True)
+    is_active = fields.Boolean(required=True)
+    last_login = fields.DateTime(required=True)
+    date_joined = fields.DateTime()
+
+
+class UserTokenSerializer(Schema):
+    token = fields.String(required=True)
+    user = fields.Nested(UserSerializer, required=True)
