@@ -2,7 +2,7 @@
 
 import random
 import string
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import pytest
 
@@ -13,8 +13,8 @@ def generate_random_string(length: int) -> str:
     return ''.join([random.choice(string.ascii_letters) for _ in range(length)])
 
 
-def get_current_datetime() -> datetime:
-    return datetime.now()
+def get_datetime() -> datetime:
+    return datetime.now() + timedelta(hours=-1)
 
 
 @pytest.fixture
@@ -27,8 +27,8 @@ def user() -> UserEntity:
         email='test@test.com',
         password='Password_1234',
         is_active=random.choice([True, False]),
-        last_login=get_current_datetime(),
-        date_joined=get_current_datetime()
+        last_login=get_datetime(),
+        date_joined=get_datetime()
     )
 
 
