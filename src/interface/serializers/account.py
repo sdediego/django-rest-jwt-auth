@@ -1,6 +1,7 @@
 # coding: utf-8
 
 import re
+from datetime import datetime
 
 from marshmallow import Schema, fields, validate, validates, validates_schema, EXCLUDE
 from marshmallow.decorators import post_load
@@ -85,8 +86,24 @@ class UserSerializer(Schema):
     username = fields.String()
     email = fields.Email(required=True)
     is_active = fields.Boolean(required=True)
-    last_login = fields.DateTime(required=True)
-    date_joined = fields.DateTime()
+    last_login = fields.String(required=True)
+    date_joined = fields.String()
+
+    @staticmethod
+    def _validate_datetime(value: str, **kwags):
+        try:
+            datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
+        except ValueError:
+            field_name = kwags.get('field_name')
+            raise ValidationError(f'{field_name} field is not datetime string.')
+
+    @validates('last_login')
+    def validate_datetime(self, value: str, **kwargs):
+        self._validate_datetime(value, **kwargs)
+
+    @validates('date_joined')
+    def validate_datetime(self, value: str, **kwargs):
+        self._validate_datetime(value, **kwargs)
 
 
 class UserTokenSerializer(Schema):
