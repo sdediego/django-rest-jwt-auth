@@ -13,5 +13,12 @@ user_router.register([
         controller=UserController,
         method='register',
         name='user_register'
+    ),
+    Route(
+        http_verb=HTTP_VERB_POST,
+        path=r'^accounts/users/login/$',
+        controller=UserController,
+        method='login',
+        name='user_login'
     )
 ])
