@@ -6,6 +6,7 @@ from datetime import datetime
 
 @dataclass
 class UserEntity:
+    id: int = None
     name: str = None
     surname: str = None
     username: str = None
@@ -23,7 +24,7 @@ class UserEntity:
 
     def __str__(self) -> str:
         username = f' ({self.username})' if self.username else ''
-        return f'{self.email}{username}'
+        return f'User {str(self.id)}: {self.email}{username}'
 
     @staticmethod
     def to_string(user: 'UserEntity') -> str:
@@ -32,3 +33,16 @@ class UserEntity:
     @property
     def full_name(self) -> str:
         return f'{self.name} {self.surname}'.strip()
+
+
+@dataclass
+class UserTokenEntity:
+    user: UserEntity = None
+    token: str = None
+
+    def __str__(self) -> str:
+        return f'Token: {str(self.user)} - {self.token}'
+
+    @staticmethod
+    def to_string(token: 'UserTokenEntity') -> str:
+        return str(token)
