@@ -6,21 +6,42 @@ from marshmallow.exceptions import ValidationError
 from src.domain.services.account import generate_password_hash
 from src.interface.serializers.account import (
     NewUserSerializer, TokenSerializer, UserLoginSerializer, UserRegisterSerializer)
-from tests.fixtures import user, token
+from tests.fixtures import token, user
 
 
 @pytest.mark.unit
 def test_new_user_serializer(user):
-    serializer = NewUserSerializer()
-    valid_data = serializer.dump(user)
+    valid_data = NewUserSerializer().dump(user)
     assert len(valid_data) == 1
     assert valid_data['email'] == user.email
 
 
 @pytest.mark.unit
-def test_token_serializer(token):
-    serializer = TokenSerializer()
-    valid_data = serializer.dump(token)
+def test_token_serializer_load(token):
+    data = {
+        'token': token.token
+    }
+    valid_data = TokenSerializer().load(data)
+    assert valid_data['token'] == token.token
+    assert 'payload' in valid_data
+    assert isinstance(valid_data['payload'], dict)
+    assert 'user_id' in valid_data['payload']
+    assert 'exp' in valid_data['payload']
+    assert 'iat' in valid_data['payload']
+
+
+@pytest.mark.unit
+def test_token_serializer_validation_error():
+    data = {
+        'token': 123456789
+    }
+    result = TokenSerializer().load(data)
+    assert 'errors' in result
+
+
+@pytest.mark.unit
+def test_token_serializer_dump(token):
+    valid_data = TokenSerializer().dump(token)
     assert valid_data['token'] == token.token
 
 
@@ -28,10 +49,9 @@ def test_token_serializer(token):
 def test_user_login_serializer(user):
     data = {
         'email': user.email,
-        'password': user.password,
+        'password': user.password
     }
-    serializer = UserLoginSerializer()
-    valid_data = serializer.load(data)
+    valid_data = UserLoginSerializer().load(data)
     assert valid_data['email'] == data['email']
     assert valid_data['password'] == generate_password_hash(data['password'])
 
@@ -39,17 +59,15 @@ def test_user_login_serializer(user):
 @pytest.mark.unit
 def test_user_login_serializer_validation_error(user):
     data = {
-        'email': user.email,
+        'email': user.email
     }
-    serializer = UserLoginSerializer()
-    result = serializer.load(data)
+    result = UserLoginSerializer().load(data)
     assert 'errors' in result
 
 
 def _test_user_register_serializer_validate_password(password, error_message):
-    serializer = UserRegisterSerializer()
     with pytest.raises(ValidationError) as err:
-        serializer.validate_password(password)
+        UserRegisterSerializer().validate_password(password)
     assert error_message == str(err.value)
 
 
@@ -95,9 +113,8 @@ def test_user_register_serializer_check_passwords(user):
         'password2': user.password
     }
     error_message = 'Password fields do not match.'
-    serializer = UserRegisterSerializer()
     with pytest.raises(ValidationError) as err:
-        serializer.check_passwords(data)
+        UserRegisterSerializer().check_passwords(data)
     assert error_message == str(err.value)
 
 
@@ -108,8 +125,7 @@ def test_user_register_serializer(user):
         'password': user.password,
         'password2': user.password
     }
-    serializer = UserRegisterSerializer()
-    valid_data = serializer.load(data)
+    valid_data = UserRegisterSerializer().load(data)
     assert valid_data['email'] == data['email']
     assert valid_data['password'] == generate_password_hash(data['password'])
     assert 'password2' not in valid_data
@@ -119,8 +135,7 @@ def test_user_register_serializer(user):
 def test_user_register_serializer_validation_error(user):
     data = {
         'email': user.email,
-        'password': user.password,
+        'password': user.password
     }
-    serializer = UserRegisterSerializer()
-    result = serializer.load(data)
+    result = UserRegisterSerializer().load(data)
     assert 'errors' in result
