@@ -29,6 +29,25 @@ def test_user_viewset_login(token):
 
 
 @pytest.mark.unit
+def test_user_viewset_refresh(token):
+    request = RequestFactory()
+    request.headers = {
+        'Authorization': token.token
+    }
+    viewset = UserViewSet()
+    viewset.viewset_factory = Mock()
+    mock_factory_create = viewset.viewset_factory.create
+    mock_factory_create.return_value = Mock()
+    mock_controller_refresh = mock_factory_create.return_value.refresh
+    mock_controller_refresh.return_value = (vars(token), HTTPStatus.OK.value)
+    response = viewset.refresh(request)
+    assert hasattr(response, 'status_code')
+    assert response.status_code == HTTPStatus.OK.value
+    assert hasattr(response, 'data')
+    assert isinstance(response.data, dict)
+
+
+@pytest.mark.unit
 def test_user_viewset_register(user):
     request = RequestFactory()
     request.data = Mock()

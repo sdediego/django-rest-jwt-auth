@@ -66,7 +66,7 @@ def test_user_controller_refresh(token):
 
 
 @pytest.mark.unit
-def test_user_controller_refresh_bad_request(token):
+def test_user_controller_refresh_bad_request():
     user_interator = Mock()
     controller = UserController(user_interator)
     invalid_token = 123456789
