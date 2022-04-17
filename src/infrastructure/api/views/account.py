@@ -21,7 +21,7 @@ class UserViewSet(ViewSet):
 
     def refresh(self, request: Request, *args, **kwargs) -> Response:
         token = request.headers.get('Authorization', '')
-        payload, status = self.controller.refresh(token)
+        payload, status = self.controller.refresh(token=token)
         return Response(data=payload, status=status)
 
     def register(self, request: Request, *args, **kwargs) -> Response:

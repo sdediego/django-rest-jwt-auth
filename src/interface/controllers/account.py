@@ -6,6 +6,7 @@ from typing import Tuple
 
 from src.domain.exceptions import EntityDoesNotExist, EntityDuplicate
 from src.domain.services.account import encode_token
+from src.interface.middlewares.auth import auth_required
 from src.interface.serializers.account import (
     NewUserSerializer, TokenSerializer, UserLoginSerializer, UserRegisterSerializer)
 from src.usecases.account import UserInteractor
@@ -31,17 +32,19 @@ class UserController:
             logger.error('Error login user with params %s: %s', str(params), err.message)
             return {'error': err.message}, HTTPStatus.BAD_REQUEST.value
         token = encode_token(user.id)
-        logger.info('User successfully logged in: %s', str(token))
+        logger.info('User successfully logged in - %s', str(token))
         return TokenSerializer().dump(token), HTTPStatus.OK.value
 
-    def refresh(self, token: str) -> Tuple[dict, int]:
+    @auth_required
+    def refresh(self, **kwargs) -> Tuple[dict, int]:
+        token = kwargs.get('token')
         logger.info('Refreshing auth token: %s', token)
         data = TokenSerializer().load({'token': token})
         if 'errors' in data:
             logger.error('Error deserializing auth token: %s', str(data['errors']))
             return data, HTTPStatus.BAD_REQUEST.value
         token = encode_token(data['payload']['user_id'])
-        logger.info('Auth token successfully refreshed: %s', token)
+        logger.info('Auth token successfully refreshed - %s', token)
         return TokenSerializer().dump(token), HTTPStatus.OK.value
 
     def register(self, params: dict) -> Tuple[dict, int]:
