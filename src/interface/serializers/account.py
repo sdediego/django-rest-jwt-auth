@@ -56,10 +56,6 @@ class UserRegisterSerializer(Schema):
     def validate_password(self, value: str):
         self._validate_password(value)
 
-    @validates('password2')
-    def validate_password(self, value: str):
-        self._validate_password(value)
-
     @validates_schema
     def check_passwords(self, data: dict, **kwargs):
         if data['password'] != data['password2']:
@@ -80,30 +76,18 @@ class UserRegisterSerializer(Schema):
 
 
 class UserSerializer(Schema):
-    id = fields.Integer()
-    name = fields.String()
-    surname = fields.String()
     username = fields.String()
     email = fields.Email(required=True)
     is_active = fields.Boolean(required=True)
     last_login = fields.String(required=True)
-    date_joined = fields.String()
-
-    @staticmethod
-    def _validate_datetime(value: str, **kwags):
-        try:
-            datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
-        except ValueError:
-            field_name = kwags.get('field_name')
-            raise ValidationError(f'{field_name} field is not datetime string.')
 
     @validates('last_login')
     def validate_datetime(self, value: str, **kwargs):
-        self._validate_datetime(value, **kwargs)
-
-    @validates('date_joined')
-    def validate_datetime(self, value: str, **kwargs):
-        self._validate_datetime(value, **kwargs)
+        try:
+            datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
+        except ValueError:
+            field_name = kwargs.get('field_name')
+            raise ValidationError(f'{field_name} field is not datetime string.')
 
 
 class UserTokenSerializer(Schema):

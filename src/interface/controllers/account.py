@@ -28,8 +28,8 @@ class UserController:
         try:
             user = self.user_interactor.login(**data)
         except EntityDoesNotExist as err:
-            logger.error('Error login user with params %s: %s', str(params), str(err))
-            return {'error': str(err)}, HTTPStatus.BAD_REQUEST.value
+            logger.error('Error login user with params %s: %s', str(params), err.message)
+            return {'error': err.message}, HTTPStatus.BAD_REQUEST.value
         user_token = generate_user_token(user)
         logger.info('User successfully logged in: %s', str(user))
         return UserTokenSerializer().dump(user_token), HTTPStatus.OK.value
@@ -43,7 +43,7 @@ class UserController:
         try:
             user = self.user_interactor.register(**data)
         except EntityDuplicate as err:
-            logger.error('Error creating duplicate user with params %s: %s', str(params), str(err))
-            return {'error': str(err)}, HTTPStatus.BAD_REQUEST.value
+            logger.error('Error creating duplicate user with params %s: %s', str(params), err.message)
+            return {'error': err.message}, HTTPStatus.BAD_REQUEST.value
         logger.info('User successfully created: %s', str(user))
         return NewUserSerializer().dump(user), HTTPStatus.CREATED.value

@@ -122,23 +122,13 @@ def test_user_register_serializer_validation_error(user):
     assert 'errors' in result
 
 
-def _test_user_serializer_validate_datetime(time, field_name):
-    serializer = UserSerializer()
-    with pytest.raises(ValidationError) as err:
-        serializer.validate_datetime(time, field_name=field_name)
-    assert f'{field_name} field is not datetime string.' == str(err.value)
-
-
 @pytest.mark.unit
 def test_user_serializer_last_login_invalid(user):
     time = datetime.fromisoformat(user.last_login).strftime('%Y-%m-%d')
-    _test_user_serializer_validate_datetime(time, 'last_login')
-
-
-@pytest.mark.unit
-def test_user_serializer_date_joined_invalid(user):
-    time = datetime.fromisoformat(user.date_joined).strftime('%Y-%m-%d')
-    _test_user_serializer_validate_datetime(time, 'date_joined')
+    serializer = UserSerializer()
+    with pytest.raises(ValidationError) as err:
+        serializer.validate_datetime(time, field_name='last_login')
+    assert f'last_login field is not datetime string.' == str(err.value)
 
 
 @pytest.mark.unit

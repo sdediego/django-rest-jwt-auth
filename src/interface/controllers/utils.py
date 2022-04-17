@@ -2,18 +2,17 @@
 
 from datetime import datetime, timedelta
 
-from django.conf import settings
-
 import jwt
 
 from src.domain.account import UserEntity, UserTokenEntity
+from src.domain.constants import JWT_ALGORITHM, JWT_EXP_DELTA_SECONDS, JWT_KEY
 
 
 def generate_user_token(user: UserEntity) -> UserTokenEntity:
-    expire = datetime.utcnow() + timedelta(seconds=settings.JWT_EXP_DELTA_SECONDS)
     payload = {
-        'user_id': str(user.id),
-        'expire': expire.strftime('%Y-%m-%d %H:%M:%S')
+        'user_id': user.id,
+        'iat': datetime.utcnow(),
+        'exp': datetime.utcnow() + timedelta(seconds=JWT_EXP_DELTA_SECONDS)
     }
-    token = jwt.encode(payload, settings.JWT_KEY, settings.JWT_ALGORITHM)
+    token = jwt.encode(payload, JWT_KEY, JWT_ALGORITHM)
     return UserTokenEntity(user=user, token=token)
