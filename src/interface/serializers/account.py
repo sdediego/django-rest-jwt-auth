@@ -6,6 +6,7 @@ from marshmallow import Schema, fields, validate, validates, validates_schema, E
 from marshmallow.decorators import post_load
 from marshmallow.exceptions import ValidationError
 
+from src.domain.exceptions import InvalidToken
 from src.domain.services.account import decode_token, generate_password_hash
 
 
@@ -28,7 +29,10 @@ class TokenSerializer(Schema):
 
     @post_load
     def make_payload(self, data: dict, **kwargs) -> dict:
-        data['payload'] = decode_token(data['token'])
+        try:
+            data['payload'] = decode_token(data['token'])
+        except InvalidToken as err:
+            data = {'errors': err.message}
         return data
 
 

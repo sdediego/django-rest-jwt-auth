@@ -8,7 +8,7 @@ from django.db.utils import IntegrityError
 from django.urls import reverse
 
 from src.infrastructure.orm.db.account.models import User
-from tests.fixtures import user
+from tests.fixtures import token, user
 
 
 @patch.object(User, 'save')
@@ -28,6 +28,7 @@ def test_user_viewset_login(mock_objects, mock_save, user, client):
     assert response.status_code == HTTPStatus.OK.value
     assert hasattr(response, 'data')
     assert isinstance(response.data, dict)
+    assert 'token' in response.data
 
 
 @patch.object(User, 'save')
@@ -67,6 +68,28 @@ def test_user_viewset_login_does_not_exist(mock_objects, mock_save, user, client
     assert hasattr(response, 'data')
     assert isinstance(response.data, dict)
     assert 'error' in response.data
+
+
+def test_user_viewset_refresh(token, client):
+    headers= {'HTTP_Authorization': token.token}
+    url = reverse('api:accounts-refresh')
+    response = client.get(url, **headers)
+    assert hasattr(response, 'status_code')
+    assert response.status_code == HTTPStatus.OK.value
+    assert hasattr(response, 'data')
+    assert isinstance(response.data, dict)
+    assert 'token' in response.data
+
+
+def test_user_viewset_token_bad_request(client):
+    headers= {'HTTP_Authorization': ''}
+    url = reverse('api:accounts-refresh')
+    response = client.get(url, **headers)
+    assert hasattr(response, 'status_code')
+    assert response.status_code == HTTPStatus.BAD_REQUEST.value
+    assert hasattr(response, 'data')
+    assert isinstance(response.data, dict)
+    assert 'errors' in response.data
 
 
 @patch.object(User, 'objects')
