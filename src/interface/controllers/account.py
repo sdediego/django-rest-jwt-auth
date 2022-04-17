@@ -5,9 +5,9 @@ from http import HTTPStatus
 from typing import Tuple
 
 from src.domain.exceptions import EntityDoesNotExist, EntityDuplicate
-from src.interface.controllers.utils import generate_user_token
+from src.domain.services.account import encode_token
 from src.interface.serializers.account import (
-    NewUserSerializer, UserLoginSerializer, UserRegisterSerializer, UserTokenSerializer)
+    NewUserSerializer, TokenSerializer, UserLoginSerializer, UserRegisterSerializer)
 from src.usecases.account import UserInteractor
 
 
@@ -30,9 +30,9 @@ class UserController:
         except EntityDoesNotExist as err:
             logger.error('Error login user with params %s: %s', str(params), err.message)
             return {'error': err.message}, HTTPStatus.BAD_REQUEST.value
-        user_token = generate_user_token(user)
-        logger.info('User successfully logged in: %s', str(user))
-        return UserTokenSerializer().dump(user_token), HTTPStatus.OK.value
+        token = encode_token(user.id)
+        logger.info('User successfully logged in: %s', str(token))
+        return TokenSerializer().dump(token), HTTPStatus.OK.value
 
     def register(self, params: dict) -> Tuple[dict, int]:
         logger.info('Registering user with params: %s', str(params))

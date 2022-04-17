@@ -5,6 +5,18 @@ from datetime import datetime
 
 
 @dataclass
+class TokenEntity:
+    token: str = None
+
+    def __str__(self) -> str:
+        return f'Token: {self.token}'
+
+    @staticmethod
+    def to_string(token: 'TokenEntity') -> str:
+        return str(token)
+
+
+@dataclass
 class UserEntity:
     id: int = None
     name: str = None
@@ -33,16 +45,3 @@ class UserEntity:
     @property
     def full_name(self) -> str:
         return f'{self.name} {self.surname}'.strip()
-
-
-@dataclass
-class UserTokenEntity:
-    user: UserEntity = None
-    token: str = None
-
-    def __str__(self) -> str:
-        return f'Token: {str(self.user)} - {self.token}'
-
-    @staticmethod
-    def to_string(token: 'UserTokenEntity') -> str:
-        return str(token)

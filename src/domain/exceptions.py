@@ -16,3 +16,7 @@ class EntityDoesNotExist(EntityError):
 
 class EntityDuplicate(EntityError):
     pass
+
+
+class InvalidToken(EntityError):
+    pass

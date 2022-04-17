@@ -6,7 +6,8 @@ from datetime import datetime, timedelta
 
 import pytest
 
-from src.domain.account import UserEntity, UserTokenEntity
+from src.domain.entities.account import UserEntity, TokenEntity
+from src.domain.services.account import encode_token
 
 
 def generate_random_string(length: int) -> str:
@@ -33,8 +34,5 @@ def user() -> UserEntity:
 
 
 @pytest.fixture
-def user_token(user) -> UserTokenEntity:
-    return UserTokenEntity(
-        user=user,
-        token=generate_random_string(144)
-    )
+def token(user) -> TokenEntity:
+    return encode_token(user.id)

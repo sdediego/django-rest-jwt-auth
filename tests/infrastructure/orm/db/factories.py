@@ -1,7 +1,7 @@
 # coding: utf-8
 
-from datetime import datetime, timezone
 import string
+from datetime import datetime, timezone
 
 from factory import django, fuzzy
 

@@ -22,7 +22,6 @@ def test_user_controller_login(user):
     data, status = controller.login(params)
     assert user_interator.login.called
     assert status == HTTPStatus.OK.value
-    assert 'user' in data
     assert 'token' in data
 
 

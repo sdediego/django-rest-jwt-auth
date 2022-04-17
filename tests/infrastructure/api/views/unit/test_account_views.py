@@ -8,11 +8,11 @@ from django.test.client import RequestFactory
 import pytest
 
 from src.infrastructure.api.views.account import UserViewSet
-from tests.fixtures import user, user_token
+from tests.fixtures import token, user
 
 
 @pytest.mark.unit
-def test_user_viewset_login(user_token):
+def test_user_viewset_login(token):
     request = RequestFactory()
     request.data = Mock()
     viewset = UserViewSet()
@@ -20,7 +20,7 @@ def test_user_viewset_login(user_token):
     mock_factory_create = viewset.viewset_factory.create
     mock_factory_create.return_value = Mock()
     mock_controller_login = mock_factory_create.return_value.login
-    mock_controller_login.return_value = (vars(user_token), HTTPStatus.OK.value)
+    mock_controller_login.return_value = (vars(token), HTTPStatus.OK.value)
     response = viewset.login(request)
     assert hasattr(response, 'status_code')
     assert response.status_code == HTTPStatus.OK.value

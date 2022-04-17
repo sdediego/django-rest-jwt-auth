@@ -6,7 +6,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from src.domain.account import UserEntity
+from src.domain.entities.account import UserEntity
 
 
 class User(models.Model):

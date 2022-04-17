@@ -1,13 +1,12 @@
 # coding: utf-8
 
 import re
-from datetime import datetime
 
 from marshmallow import Schema, fields, validate, validates, validates_schema, EXCLUDE
 from marshmallow.decorators import post_load
 from marshmallow.exceptions import ValidationError
 
-from src.interface.serializers.utils import generate_password_hash
+from src.domain.services.account import generate_password_hash
 
 
 class NewUserSerializer(Schema):
@@ -15,6 +14,10 @@ class NewUserSerializer(Schema):
 
     class Meta:
         unknown = EXCLUDE
+
+
+class TokenSerializer(Schema):
+    token = fields.String(required=True)
 
 
 class UserLoginSerializer(Schema):
@@ -73,23 +76,3 @@ class UserRegisterSerializer(Schema):
         data.pop('password2')
         data['password'] = generate_password_hash(data['password'])
         return data
-
-
-class UserSerializer(Schema):
-    username = fields.String()
-    email = fields.Email(required=True)
-    is_active = fields.Boolean(required=True)
-    last_login = fields.String(required=True)
-
-    @validates('last_login')
-    def validate_datetime(self, value: str, **kwargs):
-        try:
-            datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
-        except ValueError:
-            field_name = kwargs.get('field_name')
-            raise ValidationError(f'{field_name} field is not datetime string.')
-
-
-class UserTokenSerializer(Schema):
-    token = fields.String(required=True)
-    user = fields.Nested(UserSerializer, required=True)

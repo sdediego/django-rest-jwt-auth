@@ -1,15 +1,12 @@
 # coding: utf-8
 
-from datetime import datetime
-
 import pytest
 from marshmallow.exceptions import ValidationError
 
+from src.domain.services.account import generate_password_hash
 from src.interface.serializers.account import (
-    NewUserSerializer, UserLoginSerializer, UserRegisterSerializer,
-    UserSerializer, UserTokenSerializer)
-from src.interface.serializers.utils import generate_password_hash
-from tests.fixtures import user, user_token
+    NewUserSerializer, TokenSerializer, UserLoginSerializer, UserRegisterSerializer)
+from tests.fixtures import user, token
 
 
 @pytest.mark.unit
@@ -18,6 +15,13 @@ def test_new_user_serializer(user):
     valid_data = serializer.dump(user)
     assert len(valid_data) == 1
     assert valid_data['email'] == user.email
+
+
+@pytest.mark.unit
+def test_token_serializer(token):
+    serializer = TokenSerializer()
+    valid_data = serializer.dump(token)
+    assert valid_data['token'] == token.token
 
 
 @pytest.mark.unit
@@ -120,28 +124,3 @@ def test_user_register_serializer_validation_error(user):
     serializer = UserRegisterSerializer()
     result = serializer.load(data)
     assert 'errors' in result
-
-
-@pytest.mark.unit
-def test_user_serializer_last_login_invalid(user):
-    time = datetime.fromisoformat(user.last_login).strftime('%Y-%m-%d')
-    serializer = UserSerializer()
-    with pytest.raises(ValidationError) as err:
-        serializer.validate_datetime(time, field_name='last_login')
-    assert f'last_login field is not datetime string.' == str(err.value)
-
-
-@pytest.mark.unit
-def test_user_serializer(user):
-    serializer = UserSerializer()
-    valid_data = serializer.dump(user)
-    assert valid_data['email'] == user.email
-    assert valid_data['is_active'] == user.is_active
-    assert valid_data['last_login'] == user.last_login
-
-
-@pytest.mark.unit
-def test_user_token_serializer(user_token):
-    serializer = UserTokenSerializer()
-    valid_data = serializer.dump(user_token)
-    assert valid_data['token'] == user_token.token

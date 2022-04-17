@@ -4,7 +4,7 @@ import dataclasses
 
 import pytest
 
-from src.domain.account import UserEntity
+from src.domain.entities.account import UserEntity
 from src.infrastructure.orm.db.account.models import User
 from tests.fixtures import user
 

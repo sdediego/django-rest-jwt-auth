@@ -4,7 +4,7 @@ from collections.abc import Iterable
 from dataclasses import dataclass
 from typing import Callable, Union
 
-from src.domain.core.constants import HTTP_VERBS
+from src.interface.routes.core.constants import HTTP_VERBS
 
 
 @dataclass

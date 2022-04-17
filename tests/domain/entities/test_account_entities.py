@@ -4,8 +4,8 @@ from datetime import datetime
 
 import pytest
 
-from src.domain.account import UserEntity, UserTokenEntity
-from tests.fixtures import user, user_token
+from src.domain.entities.account import TokenEntity, UserEntity
+from tests.fixtures import token, user
 
 
 @pytest.mark.unit
@@ -49,14 +49,12 @@ def test_user_entity_full_name_property(user):
 
 
 @pytest.mark.unit
-def test_user_token_entity_attrs(user_token):
-    assert isinstance(user_token.user, UserEntity)
-    assert isinstance(user_token.token, str)
+def test_token_entity_attrs(token):
+    assert isinstance(token.token, str)
 
 
 @pytest.mark.unit
-def test_user_token_entity_representation(user_token):
-    user_token_str = UserTokenEntity.to_string(user_token)
-    assert isinstance(user_token_str, str)
-    assert str(user_token.user) in user_token_str
-    assert user_token.token in user_token_str
+def test_token_entity_representation(token):
+    token_str = TokenEntity.to_string(token)
+    assert isinstance(token_str, str)
+    assert token.token in token_str

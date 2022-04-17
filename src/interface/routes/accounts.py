@@ -1,8 +1,8 @@
 # coding: utf-8
 
-from src.domain.core.constants import HTTP_VERB_POST
-from src.domain.core.routing import Route, Router
 from src.interface.controllers.account import UserController
+from src.interface.routes.core.constants import HTTP_VERB_POST
+from src.interface.routes.core.routing import Route, Router
 
 
 user_router = Router()

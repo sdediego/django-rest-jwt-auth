@@ -2,7 +2,7 @@
 
 from django.db.utils import IntegrityError
 
-from src.domain.account import UserEntity
+from src.domain.entities.account import UserEntity
 from src.domain.exceptions import EntityDoesNotExist, EntityDuplicate
 from src.infrastructure.orm.db.account.models import User
 from src.infrastructure.orm.db.account.utils import update_last_login

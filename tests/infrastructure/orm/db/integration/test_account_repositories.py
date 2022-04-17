@@ -2,7 +2,7 @@
 
 import pytest
 
-from src.domain.account import UserEntity
+from src.domain.entities.account import UserEntity
 from src.domain.exceptions import EntityDoesNotExist, EntityDuplicate
 from src.infrastructure.orm.db.account.repositories import UserDatabaseRepository
 from tests.fixtures import user
