@@ -6,7 +6,7 @@ from marshmallow import Schema, fields, validate, validates, validates_schema, E
 from marshmallow.decorators import post_load
 from marshmallow.exceptions import ValidationError
 
-from src.domain.services.account import generate_password_hash
+from src.domain.services.account import decode_token, generate_password_hash
 
 
 class NewUserSerializer(Schema):
@@ -18,6 +18,18 @@ class NewUserSerializer(Schema):
 
 class TokenSerializer(Schema):
     token = fields.String(required=True)
+
+    def load(self, data: dict) -> dict:
+        try:
+            data = super().load(data)
+        except ValidationError as err:
+            data = {'errors': err.messages}
+        return data
+
+    @post_load
+    def make_payload(self, data: dict, **kwargs) -> dict:
+        data['payload'] = decode_token(data['token'])
+        return data
 
 
 class UserLoginSerializer(Schema):
