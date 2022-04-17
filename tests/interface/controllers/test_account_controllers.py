@@ -7,7 +7,7 @@ import pytest
 
 from src.interface.controllers.account import UserController
 from src.domain.exceptions import EntityDoesNotExist, EntityDuplicate
-from tests.fixtures import user
+from tests.fixtures import token, user
 
 
 @pytest.mark.unit
@@ -54,6 +54,25 @@ def test_user_controller_login_does_not_exist(user):
     assert status == HTTPStatus.BAD_REQUEST.value
     assert 'error' in data
     assert error_message in data['error']
+
+
+@pytest.mark.unit
+def test_user_controller_refresh(token):
+    user_interator = Mock()
+    controller = UserController(user_interator)
+    data, status = controller.refresh(token.token)
+    assert status == HTTPStatus.OK.value
+    assert 'token' in data
+
+
+@pytest.mark.unit
+def test_user_controller_refresh_bad_request(token):
+    user_interator = Mock()
+    controller = UserController(user_interator)
+    invalid_token = 123456789
+    data, status = controller.refresh(invalid_token)
+    assert status == HTTPStatus.BAD_REQUEST.value
+    assert 'errors' in data
 
 
 @pytest.mark.unit
