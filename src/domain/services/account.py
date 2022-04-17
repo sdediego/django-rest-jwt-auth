@@ -14,9 +14,9 @@ def decode_token(token: str) -> dict:
     try:
         payload = jwt.decode(token, JWT_KEY, JWT_ALGORITHM)
     except jwt.DecodeError:
-        raise InvalidToken(message='Token is invalid')
+        raise InvalidToken(message='Invalid auth token')
     except jwt.ExpiredSignatureError:
-        raise InvalidToken(message='Token is expired')
+        raise InvalidToken(message='Expired auth token')
     return payload
 
 

@@ -34,6 +34,16 @@ class UserController:
         logger.info('User successfully logged in: %s', str(token))
         return TokenSerializer().dump(token), HTTPStatus.OK.value
 
+    def refresh(self, token: str) -> Tuple[dict, int]:
+        logger.info('Refreshing auth token: %s', token)
+        data = TokenSerializer().load({'token': token})
+        if 'errors' in data:
+            logger.error('Error deserializing auth token: %s', str(data['errors']))
+            return data, HTTPStatus.BAD_REQUEST.value
+        token = encode_token(data['payload']['user_id'])
+        logger.info('Auth token successfully refreshed: %s', token)
+        return TokenSerializer().dump(token), HTTPStatus.OK.value
+
     def register(self, params: dict) -> Tuple[dict, int]:
         logger.info('Registering user with params: %s', str(params))
         data = UserRegisterSerializer().load(params)
