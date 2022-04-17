@@ -60,7 +60,8 @@ def test_user_controller_login_does_not_exist(user):
 def test_user_controller_refresh(token):
     user_interator = Mock()
     controller = UserController(user_interator)
-    data, status = controller.refresh(token.token)
+    refresh = controller.refresh.__wrapped__
+    data, status = refresh(controller, token=token.token)
     assert status == HTTPStatus.OK.value
     assert 'token' in data
 
@@ -70,7 +71,8 @@ def test_user_controller_refresh_bad_request():
     user_interator = Mock()
     controller = UserController(user_interator)
     invalid_token = 123456789
-    data, status = controller.refresh(invalid_token)
+    refresh = controller.refresh.__wrapped__
+    data, status = refresh(controller, token=invalid_token)
     assert status == HTTPStatus.BAD_REQUEST.value
     assert 'errors' in data
 

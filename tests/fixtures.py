@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 
 import pytest
 
-from src.domain.entities.account import UserEntity, TokenEntity
+from src.domain.entities.account import TokenEntity, UserEntity
 from src.domain.services.account import encode_token
 
 

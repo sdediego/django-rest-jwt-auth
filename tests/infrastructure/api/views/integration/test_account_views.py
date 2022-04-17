@@ -7,10 +7,13 @@ from unittest.mock import patch
 from django.db.utils import IntegrityError
 from django.urls import reverse
 
+import pytest
+
 from src.infrastructure.orm.db.account.models import User
 from tests.fixtures import token, user
 
 
+@pytest.mark.unit
 @patch.object(User, 'save')
 @patch.object(User, 'objects')
 def test_user_viewset_login(mock_objects, mock_save, user, client):
@@ -31,6 +34,7 @@ def test_user_viewset_login(mock_objects, mock_save, user, client):
     assert 'token' in response.data
 
 
+@pytest.mark.unit
 @patch.object(User, 'save')
 @patch.object(User, 'objects')
 def test_user_viewset_login_bad_request(mock_objects, mock_save, user, client):
@@ -50,6 +54,7 @@ def test_user_viewset_login_bad_request(mock_objects, mock_save, user, client):
     assert 'errors' in response.data
 
 
+@pytest.mark.unit
 @patch.object(User, 'save')
 @patch.object(User, 'objects')
 def test_user_viewset_login_does_not_exist(mock_objects, mock_save, user, client):
@@ -70,6 +75,7 @@ def test_user_viewset_login_does_not_exist(mock_objects, mock_save, user, client
     assert 'error' in response.data
 
 
+@pytest.mark.unit
 def test_user_viewset_refresh(token, client):
     headers= {'HTTP_Authorization': token.token}
     url = reverse('api:accounts-refresh')
@@ -81,17 +87,18 @@ def test_user_viewset_refresh(token, client):
     assert 'token' in response.data
 
 
+@pytest.mark.unit
 def test_user_viewset_token_bad_request(client):
     headers= {'HTTP_Authorization': ''}
     url = reverse('api:accounts-refresh')
     response = client.get(url, **headers)
     assert hasattr(response, 'status_code')
-    assert response.status_code == HTTPStatus.BAD_REQUEST.value
+    assert response.status_code == HTTPStatus.UNAUTHORIZED.value
     assert hasattr(response, 'data')
-    assert isinstance(response.data, dict)
-    assert 'errors' in response.data
+    assert response.data is None
 
 
+@pytest.mark.unit
 @patch.object(User, 'objects')
 def test_user_viewset_register(mock_objects, user, client):
     mock_create = mock_objects.create
@@ -110,6 +117,7 @@ def test_user_viewset_register(mock_objects, user, client):
     assert isinstance(response.data, dict)
 
 
+@pytest.mark.unit
 @patch.object(User, 'objects')
 def test_user_viewset_register_bad_request(mock_objects, user, client):
     mock_create = mock_objects.create
@@ -129,6 +137,7 @@ def test_user_viewset_register_bad_request(mock_objects, user, client):
     assert 'errors' in response.data
 
 
+@pytest.mark.unit
 @patch.object(User, 'objects')
 def test_user_viewset_register_duplicate(mock_objects, user, client):
     mock_create = mock_objects.create

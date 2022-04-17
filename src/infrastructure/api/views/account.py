@@ -28,4 +28,3 @@ class UserViewSet(ViewSet):
         data = request.data
         payload, status = self.controller.register(data)
         return Response(data=payload, status=status)
-    
