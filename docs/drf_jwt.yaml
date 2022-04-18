@@ -1,0 +1,120 @@
+swagger: "2.0"
+info:
+  description: "API backend server which includes calls to register user, login user, and refresh authentication JWT (JSON Web Token)"
+  version: "1.0.0"
+  title: "Django Rest JWT Auth API backend server"
+  contact:
+    email: "sergiodediego@outlook.com"
+  license:
+    name: "MIT License"
+    url: "https://choosealicense.com/licenses/mit/"
+host: "localhost:8000"
+basePath: "/api/accounts/users"
+tags:
+- name: "user"
+  description: "Registered user in backend database"
+- name: "token"
+  description: "Authorization JSON Web Token for logged user"
+schemes:
+- http
+paths:
+  /login/:
+    post:
+      tags:
+      - "user"
+      summary: "Login registered user"
+      description: "Login registered user and get authorization JSON Web Token for private routes"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user credentials"
+        in: "body"
+        description: "User email and password credentials for login"
+        schema:
+          type: "object"
+          properties:
+            email:
+              type: "string"
+              description: "User email"
+              example: "user@mail.com"
+            password:
+              type: "string"
+              description: "User password"
+              example: "password"
+      responses:
+        200:
+          description: "User successfully logged"
+          schema:
+            $ref: "#/definitions/Token"
+        400:
+          description: "Invalid user credentials supplied"
+  /register/:
+    post:
+      tags:
+      - "user"
+      summary: "Register new user"
+      description: "Register new user with unique credentials"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user regiter data"
+        in: "body"
+        description: "User email and password for register"
+        schema:
+          type: "object"
+          properties:
+            email:
+              type: "string"
+              description: "User email"
+              example: "user@mail.com"
+            password:
+              type: "string"
+              description: "User password"
+              example: "password"
+            password2:
+              type: "string"
+              description: "User password"
+              example: "password"
+      responses:
+        201:
+          description: "User successfully registered"
+          schema:
+            $ref: "#/definitions/NewUser"
+        400:
+          description: "Invalid parameters supplied"
+  /token/refresh/:
+    get:
+      tags:
+      - "token"
+      summary: "Refresh authorization JSON Web Token"
+      description: "Refresh authorization JSON Web Token before expiring datetime"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "Authorization"
+        in: "header"
+        description: "JSON Web Token"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "JSON Web Token successfully refreshed"
+          schema:
+            $ref: "#/definitions/Token"
+        400:
+          description: "Invalid JSON Web Token supplied"
+definitions:
+  NewUser:
+    type: "object"
+    properties:
+      email:
+        type: "string"
+        description: "User email"
+        example: "user@mail.com"
+  Token:
+    type: "object"
+    properties:
+      token:
+        type: "string"
+        description: "Authorization JSON Web Token"
+        example: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo3OCwiaWF0IjoxNjUwMTU1Mjg0LCJleHAiOjE2NTAxNTg4ODR9.9gO_LSiEVBOVNMeecWlnPCbggOONPDoN3OsvC_DGwXA"
