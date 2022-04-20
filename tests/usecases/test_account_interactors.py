@@ -29,3 +29,14 @@ def test_user_interactor_register(user):
     assert user_repo.register.called
     assert isinstance(result, UserEntity)
     assert result.email == user.email
+
+
+@pytest.mark.unit
+def test_user_interactor_update(user):
+    user_repo = Mock()
+    user_repo.update.return_value = user
+    user_interactor = UserInteractor(user_repo)
+    result = user_interactor.update(user.id)
+    assert user_repo.update.called
+    assert isinstance(result, UserEntity)
+    assert result.email == user.email

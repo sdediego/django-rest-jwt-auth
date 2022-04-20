@@ -37,17 +37,14 @@ def test_user_db_repository_create_duplicate(mock_objects, user):
 
 
 @pytest.mark.unit
-@patch.object(User, 'save')
 @patch.object(User, 'objects')
-def test_user_db_repository_get(mock_objects, mock_save, user):
+def test_user_db_repository_get(mock_objects, user):
     mock_get = mock_objects.get
     mock_get.return_value = User(**dataclasses.asdict(user))
     result = UserDatabaseRepository().get(user.email, user.password)
     assert mock_get.called
-    assert mock_save.called
     assert isinstance(result, UserEntity)
     assert result.email == user.email
-    assert result.last_login != user.last_login
 
 
 @pytest.mark.unit
@@ -59,3 +56,16 @@ def test_user_db_repository_get_does_not_exist(mock_objects, user):
         UserDatabaseRepository().get(user.email, user.password)
     assert mock_get.called
     assert 'User does not exist with this data' in str(err.value)
+
+
+@pytest.mark.unit
+@patch.object(User, 'save')
+@patch.object(User, 'objects')
+def test_user_db_repository_update(mock_objects, mock_save, user):
+    mock_get = mock_objects.get
+    mock_get.return_value = User(**dataclasses.asdict(user))
+    result = UserDatabaseRepository().update(user.id)
+    assert mock_save.called
+    assert isinstance(result, UserEntity)
+    assert result.email == user.email
+    assert result.last_login != user.last_login

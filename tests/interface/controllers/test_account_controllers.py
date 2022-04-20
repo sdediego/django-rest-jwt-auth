@@ -18,9 +18,11 @@ def test_user_controller_login(user):
     }
     user_interator = Mock()
     user_interator.login.return_value = user
+    user_interator.update.return_value = user
     controller = UserController(user_interator)
     data, status = controller.login(params)
     assert user_interator.login.called
+    assert user_interator.update.called
     assert status == HTTPStatus.OK.value
     assert 'token' in data
 
