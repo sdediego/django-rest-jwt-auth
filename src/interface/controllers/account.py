@@ -31,6 +31,7 @@ class UserController:
         except EntityDoesNotExist as err:
             logger.error('Error login user with params %s: %s', str(params), err.message)
             return {'error': err.message}, HTTPStatus.BAD_REQUEST.value
+        user = self.user_interactor.update(user.id)
         token = encode_token(user.id)
         logger.info('User successfully logged in - %s', str(token))
         return TokenSerializer().dump(token), HTTPStatus.OK.value

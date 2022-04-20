@@ -13,3 +13,6 @@ class UserRepository:
 
     def register(self, email: str, password: str) -> UserEntity:
         return self.db_repo.create(email, password)
+
+    def update(self, user_id: int) -> UserEntity:
+        return self.db_repo.update(user_id)
