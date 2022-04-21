@@ -12,7 +12,7 @@ from src.domain.entities.account import UserEntity
 class User(models.Model):
     name = models.CharField(_('name'), max_length=100, blank=True)
     surname = models.CharField(_('surname'), max_length=100, blank=True)
-    username = models.CharField(_('username'), max_length=20, blank=True, unique=True)
+    username = models.CharField(_('username'), max_length=20, blank=True)
     email = models.EmailField(_('email'), db_index=True, unique=True)
     password = models.CharField(_('password'), max_length=64, unique=True)
     is_active = models.BooleanField(_('active'), default=True)

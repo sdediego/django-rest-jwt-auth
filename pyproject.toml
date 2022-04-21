@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "djangorest-jwt"
+name = "django-rest-jwt"
 version = "0.1.0"
 description = "API backend for JWT authentication"
 authors = ["sdediego <sergiodediego@outlook.com>"]

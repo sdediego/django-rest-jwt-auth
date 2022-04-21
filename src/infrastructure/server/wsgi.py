@@ -1,5 +1,5 @@
 """
-WSGI config for djangorest-jwt project.
+WSGI config for django-rest-jwt project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
